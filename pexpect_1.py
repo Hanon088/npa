@@ -7,7 +7,7 @@ Password = "cisco"
 IP = "10.0.15.104"
 Command = "show ip interface br"
 """pexpect.spawn not support in window"""
-child = pexpect.popen_spawn.PopenSpawn('telnet'+ IP)
+child = pexpect.spawn('telnet '+ IP)
 child.expect('Username')
 child.sendline(Username)
 child.expect('Password')
