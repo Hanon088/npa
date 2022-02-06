@@ -36,9 +36,9 @@ def config_loopback(password,host,ip):
     tn_session.write(password.encode('ascii')+ b"\n")
     time.sleep(1)
 
-    tn_session.write(b"enable" + b"\n")
+    """tn_session.write(b"enable" + b"\n")
     time.sleep(1)
-    print("in to previlage")
+    print("in to previlage")"""
     tn_session.read_until(b"#")
     tn_session.write(b"config ter" + b"\n")
     time.sleep(1)
@@ -54,7 +54,9 @@ def config_loopback(password,host,ip):
     tn_session.write(b"end\n")
     tn_session.write(b"show ip interface br" + b"\n")
     time.sleep(1)
-    tn_session.write(b"exit\n")
+    tn_session.write(b"copy run start" + b"\n\n")
+    time.sleep(1)
+    tn_session.write(b"\nexit\n")
     result = tn_session.read_very_eager()
     tn_session.close()
     return result
