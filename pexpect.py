@@ -1,4 +1,6 @@
+# import pexpect
 import pexpect
+
 """ pexpect lab for config R1 R2 R3 looback ip"""
 Prompt = "#"
 Username = "admin"
@@ -6,7 +8,7 @@ Password = "cisco"
 IP = "10.0.15.4"
 Command = "show ip interface br"
 """pexpect.spawn not support in window"""
-child = pexpect.spawn('telnet'+ IP)
+child = pexpect.popen_spawn.PopenSpawn('telnet'+ IP)
 child.expect('Username')
 child.sendline(Username)
 child.expect('Password')
@@ -18,3 +20,9 @@ print(result)
 print()
 print(result.decode('UTF-8'))
 child.sendline('exit')
+command = 'cmd.exe'
+session = winpexpect.winspawn(command)
+session.sendline('/n')
+session.expect('>')
+result = session.before
+print(result('UTF-8'))
