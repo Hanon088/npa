@@ -37,6 +37,6 @@ def main ():
     for config in list_of_configuration:
         child = start_session(list(config.keys())[0],Username,Password)
         print("config for ip" + list(config.keys())[0])
-        print(set_ip_interface(child, list(config.values())[0], "255.255.255.240", "loopback 0"))
+        print(set_ip_interface(child, list(config.values())[0], "255.255.255.255", "loopback 0"))
     print("end script")
 main()
