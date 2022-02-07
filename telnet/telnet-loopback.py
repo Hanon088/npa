@@ -48,7 +48,7 @@ def config_loopback(password,host,ip):
     time.sleep(1)
     print("in to interface config")
     tn_session.read_until(b"(config-if)")
-    tn_session.write(b"ip address " + ip.encode('ascii') + b" 255.255.255.0\n")
+    tn_session.write(b"ip address " + ip.encode('ascii') + b" 255.255.255.255\n")
     time.sleep(1)
     print("config ip sucess")
     tn_session.write(b"end\n")
