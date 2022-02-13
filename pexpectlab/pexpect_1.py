@@ -1,4 +1,3 @@
-# import pexpect
 import pexpect
 import getpass
 import time
@@ -13,6 +12,7 @@ def start_session(host, Username, Password):
     child.sendline(Password)
     child.expect("#")
     return child
+
 def set_ip_interface(child, ip, mask, interface):
     """config interface ip and no shutdown interface"""
     child.sendline("config ter")
@@ -39,4 +39,5 @@ def main ():
         print("config for ip" + list(config.keys())[0])
         print(set_ip_interface(child, list(config.values())[0], "255.255.255.255", "loopback 0"))
     print("end script")
+
 main()
