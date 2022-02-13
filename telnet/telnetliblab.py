@@ -39,6 +39,7 @@ def config_ip_interface(tn_session, ip, netmask, interface):
 
     result = tn_session.read_very_eager()
     return result
+
 def main():
     """r1 ip config to 172.31.104.17 mask 255.255.255.240"""
     user = "admin"
@@ -49,5 +50,6 @@ def main():
     mask = "255.255.255.240"
     session = start_seesion(host, user, password)
     print(config_ip_interface(session, ip, mask, interface).decode('ascii'))
+
 main()
 
