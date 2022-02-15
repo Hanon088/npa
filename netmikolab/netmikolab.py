@@ -10,12 +10,16 @@ def getIPRoute(params, vrf="", pipe=""):
     """Get routing table from device"""
     command = f"sh ip route{' vrf '*(vrf != '') + vrf}{' | '*(pipe != '') + pipe}"
     result = getDataFromDevice(params, command)
+    result = result.split("\n")
+    #Adding .index incase console loggin changed the output
+    result = result[result.index('Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP') + 1:]
     return result
 
 if __name__ == '__main__':
     device_ip = "172.31.104.4"
     username = "admin"
-    key_file = "rsa2"
+    #key_file = "rsa2"
+    key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
 
     device_params = {"device_type": "cisco_ios",
                     "ip": device_ip,
