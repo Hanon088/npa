@@ -11,13 +11,20 @@ device_params = {"device_type": "cisco_ios",
                 "use_keys": True,
                 "key_file": key_file
                 }
-
+@pytest.mark.interface
 def test_ip_interface():
     ipaddress_r1 = ["G0/0 172.31.104.4", "G0/1 172.31.104.17", "G0/2 172.31.104.33", "G0/3 unassigned"]
     ipaddress_r2 = ["G0/0 172.31.104.5", "G0/1 172.31.104.34", "G0/2 172.31.104.49", "G0/3 unassigned"]
+    ipaddress_r3 = ["G0/0 172.31.104.6", "G0/1 172.31.104.50", "G0/2 192.168.122.206", "G0/3 unassigned"]
     assert getIPInterface(device_params, "G") == ipaddress_r1
     device_params.update({"ip":"172.31.104.5"})
     assert getIPInterface(device_params, "G") == ipaddress_r2
+    device_params.update({"ip":"172.31.104.6"})
+    assert getIPInterface(device_params, "G") == ipaddress_r3
+
+def test_interface_description():
+    pass
+
 
 def test_ip_route():
     managementRoute = ['C        172.31.104.0/28 is directly connected, GigabitEthernet0/0']
