@@ -22,14 +22,20 @@ def test_ip_interface():
     device_params.update({"ip":"172.31.104.6"})
     assert getIPInterface(device_params, "G") == ipaddress_r3
 
+@pytest.mark.description
 def test_interface_description():
-    pass
-
+    description_r1 = ["G0/0 Connected to G0/2 of S0 ","G0/1 Connected to G0/2 of S1 ", "G0/2 Connected to G0/1 of R2 ", "G0/3 Not Use "]
+    assert getIPinterfaceDes(device_params , "G") == description_r1
+    device_params.update({"ip":"172.31.104.5"})
+    description_r2 = ["G0/0 Connected to G0/3 of S0 ","G0/1 Connected to G0/2 of R1 ", "G0/2 Connected to G0/1 of R3 ", "G0/3 Not Use "]
+    assert getIPinterfaceDes(device_params , "G") == description_r2
+    device_params.update({"ip":"172.31.104.6"})
+    description_r2 = ["G0/0 Connected to G1/0 of S0 ","G0/1 Connected to G0/2 of R2 ", "G0/2 Connected to Nat ", "G0/3 Not Use "]
+    assert getIPinterfaceDes(device_params , "G") == description_r2
 
 def test_ip_route():
     managementRoute = ['C        172.31.104.0/28 is directly connected, GigabitEthernet0/0']
     assert getIPRoute(device_params, "management", "include ^C") == managementRoute
-
     controlDataRoute = ['C        172.31.104.16/28 is directly connected, GigabitEthernet0/1',
                         'C        172.31.104.32/28 is directly connected, GigabitEthernet0/2']
     assert getIPRoute(device_params, "control-Data", "include ^C") == controlDataRoute
