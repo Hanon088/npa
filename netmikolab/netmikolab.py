@@ -1,4 +1,5 @@
 from cProfile import run
+from distutils import command
 import re
 from turtle import st
 from netmiko import ConnectHandler
@@ -35,6 +36,28 @@ def getIPInterface(params, interface):
             result.append(string_out)
     return result
 
+def getIPinterfaceDes(params, interface):
+    command = f"show int description"
+    result = getDataFromDevice(params, command)
+    result = result.split("\n")
+    list_of_des = []
+    for line in result[1:]:
+        line = line.split()
+        if line[1] == "admin" and len(line) >= 5 and line[0][0] == "G":
+            description = ""
+            for text in line[4:]:
+                description += text + " "
+            list_of_des.append("G" + line[0][2:] + " " + description)
+        elif len(line) >= 5 and line[0][0] == "G":
+            description = ""
+            for text in line[3:]:
+                description += text + " "
+            list_of_des.append("G" + line[0][2:] + " " + description)
+        else:
+            pass
+    return list_of_des
+
+
 if __name__ == '__main__':
     device_ip = "172.31.104.4"
     username = "admin"
@@ -50,4 +73,5 @@ if __name__ == '__main__':
     # print(getIPRoute(device_params, "management", "include ^C"))
     # print(getIPRoute(device_params, "control-Data", "include ^C"))
     # print(getIPInterface(device_params, "G"))
-
+# print(getIPinterfaceDes(device_params, "G"))
+# print(setipdes(device_params))
