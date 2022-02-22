@@ -11,6 +11,7 @@ device_params = {"device_type": "cisco_ios",
                 "use_keys": True,
                 "key_file": key_file
                 }
+
 @pytest.mark.interface
 def test_ip_interface():
     ipaddress_r1 = ["G0/0 172.31.104.4", "G0/1 172.31.104.17", "G0/2 172.31.104.33", "G0/3 unassigned"]

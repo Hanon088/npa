@@ -1,7 +1,4 @@
-from cProfile import run
-from distutils import command
 import re
-from turtle import st
 from netmiko import ConnectHandler
 
 def getDataFromDevice(params, command):
