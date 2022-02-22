@@ -17,6 +17,7 @@ def getIPRoute(params, vrf="", pipe=""):
     return result
 
 def getIP(params, interface, includeMask=True):
+    """Get ip address of an interface"""
     command = f"sh ip int {interface.lower()} | include Internet address"
     result = getDataFromDevice(params, command)
     if result == "":
@@ -31,6 +32,7 @@ def getIP(params, interface, includeMask=True):
 
 
 def getAllIPInterface(params):
+    """Get all ip addresses of a device"""
     command = f"sh ip interface br"
     result = getDataFromDevice(params , command)
     result = result.split("\n")
