@@ -3,8 +3,8 @@ from netmikolab import *
 
 device_ip = "172.31.104.4"
 username = "admin"
-key_file = "rsa2"
-# key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
+#key_file = "rsa2"
+key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
 device_params = {"device_type": "cisco_ios",
                 "ip": device_ip,
                 "username": username,
@@ -14,14 +14,17 @@ device_params = {"device_type": "cisco_ios",
 
 @pytest.mark.interface
 def test_ip_interface():
-    ipaddress_r1 = ["G0/0 172.31.104.4", "G0/1 172.31.104.17", "G0/2 172.31.104.33", "G0/3 unassigned"]
+    ipaddress_r1 = [["G0/0", "172.31.104.4"], ["G0/1", "172.31.104.17"], ["G0/2", "172.31.104.33"], ["G0/3", "unassigned"]]
     ipaddress_r2 = ["G0/0 172.31.104.5", "G0/1 172.31.104.34", "G0/2 172.31.104.49", "G0/3 unassigned"]
     ipaddress_r3 = ["G0/0 172.31.104.6", "G0/1 172.31.104.50", "G0/2 192.168.122.206", "G0/3 unassigned"]
-    assert getIPInterface(device_params, "G") == ipaddress_r1
-    device_params.update({"ip":"172.31.104.5"})
-    assert getIPInterface(device_params, "G") == ipaddress_r2
-    device_params.update({"ip":"172.31.104.6"})
-    assert getIPInterface(device_params, "G") == ipaddress_r3
+    for interface, ipAddress in ipaddress_r1:
+        assert getIP(device_params, interface, includeMask=False) == ipAddress
+    #device_params.update({"ip":"172.31.104.5"})
+
+@pytest.mark.subnetmask
+def test_subnet_mask():
+    assert getIP(device_params, "G0/0")[1] == "/28"
+    
 
 @pytest.mark.description
 def test_interface_description():

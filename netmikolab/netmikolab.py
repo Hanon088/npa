@@ -16,7 +16,21 @@ def getIPRoute(params, vrf="", pipe=""):
     result = result[result.index('Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP') + 1:]
     return result
 
-def getIPInterface(params, interface):
+def getIP(params, interface, includeMask=True):
+    command = f"sh ip int {interface.lower()} | include Internet address"
+    result = getDataFromDevice(params, command)
+    if result == "":
+        return "unassigned"
+    result = result.split("is ")[1]
+    result = result.split("/")
+    int_ip = result[0]
+    int_mask = "/" + result[1]
+    if includeMask:
+        return [int_ip, int_mask]
+    return int_ip
+
+
+def getAllIPInterface(params):
     command = f"sh ip interface br"
     result = getDataFromDevice(params , command)
     result = result.split("\n")
@@ -26,12 +40,12 @@ def getIPInterface(params, interface):
         if line[0].find("Gigabit") != -1:
             line[0] = "G" + line[0][15:]
         list_of_ip.append(line[0:2])
-    result = []
+    """result = []
     for interface_in in list_of_ip:
         if interface == "G" and interface_in[0].find("G") != -1:
             string_out = interface_in[0] + " " + interface_in[1]
-            result.append(string_out)
-    return result
+            result.append(string_out)"""
+    return list_of_ip
 
 def getIPinterfaceDes(params, interface):
     command = f"show int description"
@@ -69,6 +83,8 @@ if __name__ == '__main__':
                     }
     # print(getIPRoute(device_params, "management", "include ^C"))
     # print(getIPRoute(device_params, "control-Data", "include ^C"))
-    # print(getIPInterface(device_params, "G"))
-# print(getIPinterfaceDes(device_params, "G"))
+    print(getIP(device_params, "G0/0"))
+    print(getIP(device_params, "G0/0", False))
+    print(getIP(device_params, "G0/3"))
+    # print(getIPinterfaceDes(device_params, "G"))
 # print(setipdes(device_params))
