@@ -70,6 +70,31 @@ def getIPinterfaceDes(params, interface):
             pass
     return list_of_des
 
+def setipdes_all(device_params):
+    with ConnectHandler(**device_params) as ssh:
+        result =  ssh.send_command("sh cdp nei")
+    result = result.split("\n")
+    result_len = len(result)
+    result = result[5:result_len-2]
+    output = {}
+    for line in result:
+        result = line.split()
+        line = result[:1]
+        line[0] = line[0][:2]
+        line_len = len(result)
+        line.append(result[1:3])
+        line[1] = line[1][0][0] + line[1][1]
+        line.append(result[line_len-2:line_len])
+        line[2] = line[2][0][0] + line[2][1]
+        output.update({line[1]:"Connected to " + line[2] + " of " + line[0]})
+    with ConnectHandler(**device_params) as ssh:
+        for interface in output:
+            ssh.send_config_set(["Interface " + interface,"des " + output[interface]])
+        ssh.send_config_set(["interface g0/3","des Not Use"])
+        if device_params["ip"] == "172.31.104.6" and interface == "G0/2":
+            ssh.send_config_set(["interface g0/2","des Connected to Nat"])
+        result = ssh.send_command("show int description")
+    return output
 
 if __name__ == '__main__':
     device_ip = "172.31.104.4"
@@ -85,8 +110,7 @@ if __name__ == '__main__':
                     }
     # print(getIPRoute(device_params, "management", "include ^C"))
     # print(getIPRoute(device_params, "control-Data", "include ^C"))
-    print(getIP(device_params, "G0/0"))
-    print(getIP(device_params, "G0/0", False))
-    print(getIP(device_params, "G0/3"))
+    # print(getIP(device_params, "G0/0"))
+    # print(getIP(device_params, "G0/0", False))
+    # print(getIP(device_params, "G0/3"))
     # print(getIPinterfaceDes(device_params, "G"))
-# print(setipdes(device_params))
