@@ -14,6 +14,12 @@ router1 = { "management_ip": "172.31.104.4",
                                       ["G0/2", "Connected to G0/1 of R2 "],
                                       ["G0/3", "Not Use "]
                                       ],
+            "interface_status" : [
+                                    ["G0/0", "up", "up"],
+                                    ["G0/1", "up", "up"],
+                                    ["G0/2", "up", "up"],
+                                    ["G0/3", "administratively down", "down"],
+                                    ],
             "management_route": ['C        172.31.104.0/28 is directly connected, GigabitEthernet0/0'],
             "control_data_route": ['C        172.31.104.16/28 is directly connected, GigabitEthernet0/1',
                                    'C        172.31.104.32/28 is directly connected, GigabitEthernet0/2']
@@ -32,6 +38,12 @@ router2 = { "management_ip": "172.31.104.5",
                                       ["G0/2", "Connected to G0/1 of R3 "],
                                       ["G0/3", "Not Use "]
                                       ],
+            "interface_status" : [
+                                    ["G0/0", "up", "up"],
+                                    ["G0/1", "up", "up"],
+                                    ["G0/2", "up", "up"],
+                                    ["G0/3", "administratively down", "down"],
+                                    ],
             "management_route": ['C        172.31.104.0/28 is directly connected, GigabitEthernet0/0'],
             "control_data_route": ['C        172.31.104.32/28 is directly connected, GigabitEthernet0/1',
                                    'C        172.31.104.48/28 is directly connected, GigabitEthernet0/2']
@@ -49,14 +61,21 @@ router3 = { "management_ip": "172.31.104.6",
                                       ["G0/2", "Connected to WAN "],
                                       ["G0/3", "Not Use "]
                                       ],
+            "interface_status" : [
+                                    ["G0/0", "up", "up"],
+                                    ["G0/1", "up", "up"],
+                                    ["G0/2", "up", "up"],
+                                    ["G0/3", "administratively down", "down"],
+                                    ['NVI0', 'up', 'up']
+                                    ],
             "management_route": ['C        172.31.104.0/28 is directly connected, GigabitEthernet0/0'],
             "control_data_route": ['C        172.31.104.48/28 is directly connected, GigabitEthernet0/1',
                                    'C        192.168.122.0/24 is directly connected, GigabitEthernet0/2']
             }
 
 username = "admin"
-#key_file = "rsa2"
-key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
+key_file = "rsa2"
+# key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
 device_params = {"device_type": "cisco_ios",
                 "ip": "",
                 "username": username,
@@ -77,6 +96,9 @@ def test_r1():
             address = interface[1]
             mask = interface[2]
             assert getIP(device_params, intName) == [address, mask]
+
+    #test interface status
+    assert getipstatus(device_params) == router["interface_status"]
     
     #ip route
     assert getIPRoute(device_params, "management", "include ^C") == router["management_route"]
@@ -99,6 +121,9 @@ def test_r2():
             address = interface[1]
             mask = interface[2]
             assert getIP(device_params, intName) == [address, mask]
+
+    #test interface status
+    assert getipstatus(device_params) == router["interface_status"]
     
     #ip route
     assert getIPRoute(device_params, "management", "include ^C") == router["management_route"]
@@ -121,6 +146,8 @@ def test_r3():
             address = interface[1]
             mask = interface[2]
             assert getIP(device_params, intName) == [address, mask]
+    #test interface status
+    assert getipstatus(device_params) == router["interface_status"]
     
     #ip route
     assert getIPRoute(device_params, "management", "include ^C") == router["management_route"]
