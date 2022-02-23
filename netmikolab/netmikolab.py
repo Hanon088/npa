@@ -37,18 +37,6 @@ def getAllIPInterface(params, includeLoopback=True):
     command = f"sh ip interface br"
     result = getDataFromDevice(params , command)
     result = result.split("\n")[1:]
-    """list_of_ip = []
-    for line in result[1:]:
-        line = line.split()
-        if line[0].find("Gigabit") != -1:
-            line[0] = "G" + line[0][15:]
-        list_of_ip.append(line[0:2])
-    result = []
-    for interface_in in list_of_ip:
-        if interface == "G" and interface_in[0].find("G") != -1:
-            string_out = interface_in[0] + " " + interface_in[1]
-            result.append(string_out)
-    return list_of_ip"""
     ipDict = {}
     for line in result:
         line = line.split()[:2]
@@ -57,7 +45,7 @@ def getAllIPInterface(params, includeLoopback=True):
         ipDict.update({line[0]: line[1]})
     return ipDict
 
-def getIPinterfaceDes(params, interface):
+def getInterfaceDescription(params, interface):
     command = f"show int description"
     result = getDataFromDevice(params, command)
     result = result.split("\n")
@@ -78,7 +66,7 @@ def getIPinterfaceDes(params, interface):
             pass
     return list_of_des
 
-def setipdes_all(params):
+def setInterfaceDescription(params):
     result = getDataFromDevice(params, "sh cdp nei")
     ipDict = getAllIPInterface(params, False)
     intStatus = {}
