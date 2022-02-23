@@ -1,3 +1,4 @@
+from distutils import command
 import re
 from netmiko import ConnectHandler
 
@@ -103,11 +104,28 @@ def setInterfaceDescriptions(params):
     #maybe find out what to return
     return output
 
+def getipstatus(device_params, interface="all"):
+    command = "sh ip int | include line proto"
+    output = []
+    if interface.find("G") != -1:
+        command = "show ip interface " + interface + " | include Gigabit"
+    with ConnectHandler(**device_params) as ssh:
+        result = ssh.send_command(command)
+    result = result.split("\n")
+    for line in result:
+        line = line.split(" ")
+        line_status = line[len(line) - 5][:-1]
+        if line[2].find("admin") != -1:
+            line_status = "administratively " + line_status
+        if line[0].find("L") == -1:
+            output.append([line[0][0] + line[0][-3:], line_status, line[len(line) - 1]])
+    return output
+    
 if __name__ == '__main__':
     device_ip = "172.31.104.4"
     username = "admin"
-    #key_file = "rsa2"
-    key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
+    key_file = "rsa2"
+    # key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
 
     device_params = {"device_type": "cisco_ios",
                     "ip": device_ip,
@@ -115,3 +133,4 @@ if __name__ == '__main__':
                     "use_keys": True,
                     "key_file": key_file
                     }
+                    
