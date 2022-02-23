@@ -1,5 +1,4 @@
 import re
-from turtle import down
 from netmiko import ConnectHandler
 
 def getDataFromDevice(params, command):
@@ -57,12 +56,12 @@ def getInterfaceDescriptions(params):
             description = ""
             for text in line[4:]:
                 description += text + " "
-            list_of_des.append("G" + line[0][2:] + " " + description)
+            list_of_des.append(["G" + line[0][2:], description])
         elif len(line) >= 5 and line[0][0] == "G":
             description = ""
             for text in line[3:]:
                 description += text + " "
-            list_of_des.append("G" + line[0][2:] + " " + description)
+            list_of_des.append(["G" + line[0][2:], description])
         else:
             pass
     return list_of_des
@@ -99,7 +98,7 @@ def setInterfaceDescriptions(params):
                 ssh.send_config_set(["Interface " + interface,"des Not Use"])
 
         if params["ip"] == "172.31.104.6":
-            ssh.send_config_set(["interface g0/2","des Connected to Nat"])
+            ssh.send_config_set(["interface g0/2","des Connected to WAN"])
         result = ssh.send_command("show int description")
     #maybe find out what to return
     return output
@@ -116,12 +115,3 @@ if __name__ == '__main__':
                     "use_keys": True,
                     "key_file": key_file
                     }
-    # print(getIPRoute(device_params, "management", "include ^C"))
-    # print(getIPRoute(device_params, "control-Data", "include ^C"))
-    # print(getIP(device_params, "G0/0"))
-    # print(getIP(device_params, "G0/0", False))
-    # print(getIP(device_params, "G0/3"))
-    #print(getInterfaceDescriptions(device_params))
-    #print(getAllIPInterface(device_params))
-    #print(getAllIPInterface(device_params, False))
-    #print(setInterfaceDescription(device_params))
