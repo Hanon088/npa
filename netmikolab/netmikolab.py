@@ -32,7 +32,7 @@ def getIP(params, interface, includeMask=True):
     return int_ip
 
 
-def getAllIPInterface(params, includeLoopback=True):
+def getAllIPInterface(params, includeNonPhysical=True):
     """Get all ip addresses of a device"""
     command = f"sh ip interface br"
     result = getDataFromDevice(params , command)
@@ -40,12 +40,13 @@ def getAllIPInterface(params, includeLoopback=True):
     ipDict = {}
     for line in result:
         line = line.split()[:2]
-        if "Loopback" in line[0] and not includeLoopback:
+        if "Ethernet" not in line[0] and "Serial" not in line[0] and not includeNonPhysical:
             continue
         ipDict.update({line[0]: line[1]})
     return ipDict
 
-def getInterfaceDescription(params, interface):
+def getInterfaceDescriptions(params):
+    """Get descriptions of all physical interfaces of a device"""
     command = f"show int description"
     result = getDataFromDevice(params, command)
     result = result.split("\n")
@@ -66,7 +67,8 @@ def getInterfaceDescription(params, interface):
             pass
     return list_of_des
 
-def setInterfaceDescription(params):
+def setInterfaceDescriptions(params):
+    """Set descriptions of all physical interfaces of a device"""
     result = getDataFromDevice(params, "sh cdp nei")
     ipDict = getAllIPInterface(params, False)
     intStatus = {}
@@ -96,7 +98,7 @@ def setInterfaceDescription(params):
             else:
                 ssh.send_config_set(["Interface " + interface,"des Not Use"])
 
-        if params["ip"] == "172.31.104.6" and interface == "G0/2":
+        if params["ip"] == "172.31.104.6":
             ssh.send_config_set(["interface g0/2","des Connected to Nat"])
         result = ssh.send_command("show int description")
     #maybe find out what to return
@@ -119,7 +121,7 @@ if __name__ == '__main__':
     # print(getIP(device_params, "G0/0"))
     # print(getIP(device_params, "G0/0", False))
     # print(getIP(device_params, "G0/3"))
-    # print(getIPinterfaceDes(device_params, "G"))
+    #print(getInterfaceDescriptions(device_params))
     #print(getAllIPInterface(device_params))
     #print(getAllIPInterface(device_params, False))
-    print(setipdes_all(device_params))
+    #print(setInterfaceDescription(device_params))

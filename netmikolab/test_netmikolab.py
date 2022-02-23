@@ -3,8 +3,8 @@ from netmikolab import *
 
 device_ip = "172.31.104.4"
 username = "admin"
-key_file = "rsa2"
-# key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
+#key_file = "rsa2"
+key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
 device_params = {"device_type": "cisco_ios",
                 "ip": device_ip,
                 "username": username,
@@ -29,16 +29,16 @@ def test_subnet_mask():
 @pytest.mark.description
 def test_interface_description():
     description_r1 = ["G0/0 Connected to G0/2 of S0 ","G0/1 Connected to G0/2 of S1 ", "G0/2 Connected to G0/1 of R2 ", "G0/3 Not Use "]
-    setInterfaceDescription(device_params)
-    assert getInterfaceDescription(device_params , "G") == description_r1
+    setInterfaceDescriptions(device_params)
+    assert getInterfaceDescriptions(device_params) == description_r1
     device_params.update({"ip":"172.31.104.5"})
-    setInterfaceDescription(device_params)
+    setInterfaceDescriptions(device_params)
     description_r2 = ["G0/0 Connected to G0/3 of S0 ","G0/1 Connected to G0/2 of R1 ", "G0/2 Connected to G0/1 of R3 ", "G0/3 Not Use "]
-    assert getInterfaceDescription(device_params , "G") == description_r2
+    assert getInterfaceDescriptions(device_params) == description_r2
     device_params.update({"ip":"172.31.104.6"})
-    setInterfaceDescription(device_params)
-    description_r2 = ["G0/0 Connected to G1/0 of S0 ","G0/1 Connected to G0/2 of R2 ", "G0/2 Connected to Nat ", "G0/3 Not Use "]
-    assert getInterfaceDescription(device_params , "G") == description_r2
+    setInterfaceDescriptions(device_params)
+    description_r3 = ["G0/0 Connected to G1/0 of S0 ","G0/1 Connected to G0/2 of R2 ", "G0/2 Connected to Nat ", "G0/3 Not Use "]
+    assert getInterfaceDescriptions(device_params) == description_r3
 
 def test_ip_route():
     managementRoute = ['C        172.31.104.0/28 is directly connected, GigabitEthernet0/0']
