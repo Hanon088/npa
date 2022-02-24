@@ -75,25 +75,20 @@ def setInterfaceDescriptions(params):
         intName = intName.split("Ethernet")
         intStatus.update({intName[0][0] + intName[1]: intIp != "unassigned"})
 
-    result = result.split("\n")
-    result_len = len(result)
-    result = result[5:result_len-2]
-    output = {}
+    result = re.search("Device ID[\w\s\S]*Total cdp", result).group().split("\n")[1:-2]
+    descDict = {}
     for line in result:
-        result = line.split()
-        line = result[:1]
-        line[0] = line[0][:2]
-        line_len = len(result)
-        line.append(result[1:3])
-        line[1] = line[1][0][0] + line[1][1]
-        line.append(result[line_len-2:line_len])
-        line[2] = line[2][0][0] + line[2][1]
-        output.update({line[1]:"Connected to " + line[2] + " of " + line[0]})
+        connectedDevice = re.search("\S+\d+", line).group()
+        localInterface =  re.search("[A-Z][a-z][a-z] \d/\d", line).group()
+        localInterface = localInterface[0] + localInterface[4:]
+        connectedPort =  re.search("[A-Z][a-z][a-z] \d/\d$", line).group()
+        connectedPort = connectedPort[0] + connectedPort[4:]
+        descDict.update({str(localInterface): f"Connected to {connectedPort} of {connectedDevice}"})
 
     with ConnectHandler(**params) as ssh:
         for interface in intStatus:
             if intStatus[interface]:
-                ssh.send_config_set(["Interface " + interface,"des " + output[interface]])
+                ssh.send_config_set(["Interface " + interface,"des " + descDict[interface]])
             else:
                 ssh.send_config_set(["Interface " + interface,"des Not Use"])
 
@@ -101,7 +96,7 @@ def setInterfaceDescriptions(params):
             ssh.send_config_set(["interface g0/2","des Connected to WAN"])
         result = ssh.send_command("show int description")
     #maybe find out what to return
-    return output
+    return descDict
 
 def getipstatus(device_params, interface="all"):
     command = "sh ip int | include line proto"
