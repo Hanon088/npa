@@ -1,4 +1,3 @@
-from distutils import command
 import re
 from netmiko import ConnectHandler
 
@@ -23,10 +22,10 @@ def getIP(params, interface, includeMask=True):
     result = getDataFromDevice(params, command)
     if result == "":
         return "unassigned"
-    result = result.split("is ")[1]
-    result = result.split("/")
-    int_ip = result[0]
-    int_mask = "/" + result[1]
+    int_ip = re.search("\d+\.\d+\.\d+\.\d+", result).group()
+    int_mask = re.search("/\d+$", result)
+    if int_mask:
+        int_mask = int_mask.group()
     if includeMask:
         return [int_ip, int_mask]
     return int_ip

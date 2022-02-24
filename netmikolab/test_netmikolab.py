@@ -74,8 +74,8 @@ router3 = { "management_ip": "172.31.104.6",
             }
 
 username = "admin"
-key_file = "rsa2"
-# key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
+#key_file = "rsa2"
+key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
 device_params = {"device_type": "cisco_ios",
                 "ip": "",
                 "username": username,
