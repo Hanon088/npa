@@ -9,10 +9,10 @@ router1 = { "management_ip": "172.31.104.4",
                              ["G0/3", "unassigned"]
                              ],
             "interface_description": [
-                                      ["G0/0", "Connected to G0/2 of S0 "],
-                                      ["G0/1", "Connected to G0/2 of S1 "],
-                                      ["G0/2", "Connected to G0/1 of R2 "],
-                                      ["G0/3", "Not Use "]
+                                      ["G0/0", "Connected to G0/2 of S0"],
+                                      ["G0/1", "Connected to G0/2 of S1"],
+                                      ["G0/2", "Connected to G0/1 of R2"],
+                                      ["G0/3", "Not Use"]
                                       ],
             "interface_status" : [
                                     ["G0/0", "up", "up"],
@@ -33,10 +33,10 @@ router2 = { "management_ip": "172.31.104.5",
                              ["G0/3", "unassigned"]
                              ],
             "interface_description": [
-                                      ["G0/0", "Connected to G0/3 of S0 "],
-                                      ["G0/1", "Connected to G0/2 of R1 "],
-                                      ["G0/2", "Connected to G0/1 of R3 "],
-                                      ["G0/3", "Not Use "]
+                                      ["G0/0", "Connected to G0/3 of S0"],
+                                      ["G0/1", "Connected to G0/2 of R1"],
+                                      ["G0/2", "Connected to G0/1 of R3"],
+                                      ["G0/3", "Not Use"]
                                       ],
             "interface_status" : [
                                     ["G0/0", "up", "up"],
@@ -56,17 +56,16 @@ router3 = { "management_ip": "172.31.104.6",
                              ["G0/3", "unassigned"]
                              ],
             "interface_description": [
-                                      ["G0/0", "Connected to G1/0 of S0 "],
-                                      ["G0/1", "Connected to G0/2 of R2 "],
-                                      ["G0/2", "Connected to WAN "],
-                                      ["G0/3", "Not Use "]
+                                      ["G0/0", "Connected to G1/0 of S0"],
+                                      ["G0/1", "Connected to G0/2 of R2"],
+                                      ["G0/2", "Connected to WAN"],
+                                      ["G0/3", "Not Use"]
                                       ],
             "interface_status" : [
                                     ["G0/0", "up", "up"],
                                     ["G0/1", "up", "up"],
                                     ["G0/2", "up", "up"],
                                     ["G0/3", "administratively down", "down"],
-                                    ['NVI0', 'up', 'up']
                                     ],
             "management_route": ['C        172.31.104.0/28 is directly connected, GigabitEthernet0/0'],
             "control_data_route": ['C        172.31.104.48/28 is directly connected, GigabitEthernet0/1',
@@ -74,8 +73,8 @@ router3 = { "management_ip": "172.31.104.6",
             }
 
 username = "admin"
-#key_file = "rsa2"
-key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
+key_file = "rsa2"
+# key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
 device_params = {"device_type": "cisco_ios",
                 "ip": "",
                 "username": username,
