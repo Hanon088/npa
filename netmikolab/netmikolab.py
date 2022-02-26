@@ -38,33 +38,28 @@ def getAllIPInterface(params, includeNonPhysical=True):
     result = result.split("\n")[1:]
     ipDict = {}
     for line in result:
-        line = line.split()[:2]
-        if "Ethernet" not in line[0] and "Serial" not in line[0] and not includeNonPhysical:
+        if not bool(re.search("Ethernet|Serial", line)) and not includeNonPhysical:
             continue
+        line = line.split()[:2]
         ipDict.update({line[0]: line[1]})
     return ipDict
+
 
 def getInterfaceDescriptions(params):
     """Get descriptions of all physical interfaces of a device"""
     command = f"show int description"
-    result = getDataFromDevice(params, command)
-    result = result.split("\n")
-    list_of_des = []
-    for line in result[1:]:
-        line = line.split()
-        if line[1] == "admin" and len(line) >= 5 and line[0][0] == "G":
-            description = ""
-            for text in line[4:]:
-                description += text + " "
-            list_of_des.append(["G" + line[0][2:], description])
-        elif len(line) >= 5 and line[0][0] == "G":
-            description = ""
-            for text in line[3:]:
-                description += text + " "
-            list_of_des.append(["G" + line[0][2:], description])
-        else:
-            pass
-    return list_of_des
+    raw_text = getDataFromDevice(params, command)
+    raw_text = raw_text.split("\n")        
+    output = []
+    for line in raw_text:
+        list_ram = []
+        re_interface = re.search('Gi[0-9]/[0-9]', line)
+        re_des = re.search('Not Use|Connected \S+ \S+ \S+ \S+|Connected to WAN', line)
+        if re_interface != None and re_des != None:
+            list_ram.append("G" + re_interface.group()[-3:])
+            list_ram.append(re_des.group())
+            output.append(list_ram)
+    return output
 
 def setInterfaceDescriptions(params):
     """Set descriptions of all physical interfaces of a device"""
@@ -98,25 +93,32 @@ def setInterfaceDescriptions(params):
     #maybe find out what to return
     return descDict
 
-def getipstatus(device_params, interface="all"):
+def getipstatus(params, interface="all"):
     command = "sh ip int | include line proto"
     output = []
     if interface.find("G") != -1:
         command = "show ip interface " + interface + " | include Gigabit"
-    with ConnectHandler(**device_params) as ssh:
+    with ConnectHandler(**params) as ssh:
         result = ssh.send_command(command)
     result = result.split("\n")
+    print(result)
     for line in result:
-        line = line.split(" ")
-        line_status = line[len(line) - 5][:-1]
-        if line[2].find("admin") != -1:
-            line_status = "administratively " + line_status
-        if line[0].find("L") == -1:
-            output.append([line[0][0] + line[0][-3:], line_status, line[len(line) - 1]])
+        re_interface = re.search('GigabitEthernet\d/\d', line)
+        re_py_status = re.search('is \S+', line)
+        re_protocol_status = re.search('protocol is \S+', line)
+        if re_interface != None and re_py_status != None and re_protocol_status != None:
+            list_ram_1 = []
+            list_ram_1.append(re_interface.group()[0] + re_interface.group()[-3:])
+            if re_py_status.group()[3:] == "administratively":
+                list_ram_1.append(re_py_status.group()[3:] + " down")
+            else:
+                list_ram_1.append(re_py_status.group()[3:-1])
+            list_ram_1.append(re_protocol_status.group()[12:])
+            output.append(list_ram_1)
     return output
     
 if __name__ == '__main__':
-    device_ip = "172.31.104.4"
+    device_ip = "172.31.104.6"
     username = "admin"
     key_file = "rsa2"
     # key_file="C:\\Users\\Jack\\Documents\\NPA\\rsa2"
@@ -127,4 +129,3 @@ if __name__ == '__main__':
                     "use_keys": True,
                     "key_file": key_file
                     }
-                    
